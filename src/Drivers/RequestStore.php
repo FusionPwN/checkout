@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Vanilo\Checkout\Drivers;
 
+use App\Models\Admin\Address as AdminAddress;
 use Illuminate\Support\Arr;
 use Vanilo\Checkout\Contracts\CheckoutDataFactory;
 use Vanilo\Checkout\Contracts\CheckoutStore;
@@ -59,16 +60,55 @@ class RequestStore implements CheckoutStore
      */
     public function update(array $data)
     {
-        $this->updateBillpayer($data['billpayer'] ??  []);
+		$shippingAddrId = Arr::get($data, 'shippingAddress.id');
+		$billingAddrId = Arr::get($data, 'billpayer.id');
 
-        if (Arr::get($data, 'ship_to_billing_address')) {
-            $shippingAddress = $data['billpayer']['address'];
-            $shippingAddress['name'] = $this->getShipToName();
-        } else {
-            $shippingAddress = $data['shippingAddress'] ?? [];
-        }
+		$shippingAddress = [];
+		$billingAddress = [];
 
-        $this->updateShippingAddress($shippingAddress);
+		if ($shippingAddrId == 'new-address') {
+			$shippingAddress = $data['shippingAddress'];
+		} else {
+			$shippingAddress = AdminAddress::find($shippingAddrId)->toArray();
+		}
+
+		$this->updateShippingAddress($shippingAddress ?? []);
+
+		if ($billingAddrId == 'use-shipping-data') {
+			$billingAddress['firstname'] 				= $shippingAddress['firstname'];
+			$billingAddress['lastname'] 				= $shippingAddress['lastname'];
+			$billingAddress['email'] 					= $shippingAddress['email'];
+			$billingAddress['phone'] 					= $shippingAddress['phone'];
+			$billingAddress['address'] 					= [];
+			$billingAddress['address']['address'] 		= $shippingAddress['address'];
+			$billingAddress['address']['city'] 			= $shippingAddress['city'];
+			$billingAddress['address']['postalcode'] 	= $shippingAddress['postalcode'];
+			$billingAddress['address']['country_id'] 	= $shippingAddress['country_id'];
+			if (Arr::get($data, 'billpayer.shipping-nif')) {
+				$billingAddress['nif'] = Arr::get($data, 'billpayer.shipping-nif');
+			}
+		} else if ($billingAddrId == 'new-address') {
+			$billingAddress = $data['billpayer'];
+		} else if ($billingAddrId == 'fatura-simplificada') {
+			$billingAddress = [];
+			$billingAddress['address'] = [];
+			$billingAddress['address']['country_id'] = $shippingAddress['country_id'];
+		} else {
+			$billingAddressDB = AdminAddress::find($billingAddrId);
+
+			$billingAddress['firstname'] 				= $billingAddressDB->firstname;
+			$billingAddress['lastname'] 				= $billingAddressDB->lastname;
+			$billingAddress['email'] 					= $billingAddressDB->email;
+			$billingAddress['phone'] 					= $billingAddressDB->phone;
+			$billingAddress['nif'] 						= $billingAddressDB->nif;
+			$billingAddress['address'] 					= [];
+			$billingAddress['address']['address'] 		= $billingAddressDB->address;
+			$billingAddress['address']['city'] 			= $billingAddressDB->city;
+			$billingAddress['address']['postalcode'] 	= $billingAddressDB->postalcode;
+			$billingAddress['address']['country_id'] 	= $billingAddressDB->country_id;
+		}
+
+		$this->updateBillpayer($billingAddress);
     }
 
     /**
