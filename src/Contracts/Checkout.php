@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Vanilo\Checkout\Contracts;
 
-use Vanilo\Contracts\Address;
-use Vanilo\Contracts\Billpayer;
 use Vanilo\Contracts\CheckoutSubject;
 
 interface Checkout
@@ -50,30 +48,30 @@ interface Checkout
     /**
      * Returns the bill payer details
      *
-     * @return Billpayer
+     * @return Array
      */
-    public function getBillpayer(): Billpayer;
+    public function getBillpayer(): Array;
 
     /**
      * Sets the bill payer details
      *
-     * @param Billpayer $billpayer
+     * @param Array $address
      */
-    public function setBillpayer(Billpayer $billpayer);
+    public function setBillpayer(Array $address);
 
     /**
      * Returns the shipping address
      *
-     * @return Address
+     * @return Array
      */
-    public function getShippingAddress(): Address;
+    public function getShippingAddress(): Array;
 
     /**
      * Sets the shipping address
      *
-     * @param Address $address
+     * @param Array $address
      */
-    public function setShippingAddress(Address $address);
+    public function setShippingAddress(Array $address);
 
     public function setCustomAttribute(string $key, $value): void;
 
