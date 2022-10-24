@@ -33,10 +33,5 @@
         "psr-4": {
             "Vanilo\\Checkout\\Tests\\": "tests/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.2.5-dev"
-        }
     }
 }
