@@ -20,6 +20,8 @@ use Vanilo\Checkout\Contracts\CheckoutStore;
 use Vanilo\Checkout\Traits\EmulatesFillAttributes;
 use Vanilo\Checkout\Traits\HasCart;
 use Vanilo\Checkout\Traits\HasCheckoutState;
+use Vanilo\Contracts\Address;
+use Vanilo\Contracts\Billpayer;
 
 /**
  * Stores & fetches checkout data across http requests.
@@ -34,11 +36,11 @@ class RequestStore implements CheckoutStore
 
     protected $state;
 
-    /** @var  Array */
-    protected $billpayer = [];
+    /** @var  Billpayer */
+    protected $billpayer;
 
-    /** @var  Array */
-    protected $shippingAddress = [];
+    /** @var  Address */
+    protected $shippingAddress;
 
     /** @var  CheckoutDataFactory */
     protected $dataFactory;
@@ -46,8 +48,11 @@ class RequestStore implements CheckoutStore
     /** @var array */
     protected $customData = [];
 
-    public function __construct($config)
+    public function __construct($config, CheckoutDataFactory $dataFactory)
     {
+        $this->dataFactory = $dataFactory;
+        $this->billpayer = $dataFactory->createBillpayer();
+        $this->shippingAddress = $dataFactory->createShippingAddress();
     }
 
     /**
@@ -117,7 +122,7 @@ class RequestStore implements CheckoutStore
     /**
      * @inheritdoc
      */
-    public function getBillpayer(): Array
+    public function getBillpayer(): Billpayer
     {
         return $this->billpayer;
     }
@@ -125,7 +130,7 @@ class RequestStore implements CheckoutStore
     /**
      * @inheritdoc
      */
-    public function setBillpayer(Array $billpayer)
+    public function setBillpayer(Billpayer $billpayer)
     {
         $this->billpayer = $billpayer;
     }
@@ -133,7 +138,7 @@ class RequestStore implements CheckoutStore
     /**
      * @inheritdoc
      */
-    public function getShippingAddress(): Array
+    public function getShippingAddress(): Address
     {
         return $this->shippingAddress;
     }
@@ -141,7 +146,7 @@ class RequestStore implements CheckoutStore
     /**
      * @inheritdoc
      */
-    public function setShippingAddress(Array $address)
+    public function setShippingAddress(Address $address)
     {
         return $this->shippingAddress = $address;
     }
@@ -169,9 +174,10 @@ class RequestStore implements CheckoutStore
     /**
      * @inheritdoc
      */
-    protected function updateBillpayerAddress($data)
+    protected function updateBillpayer($data)
     {
-        $this->fill($this->billpayer, $data);
+        $this->fill($this->billpayer, Arr::except($data, 'address'));
+        $this->fill($this->billpayer->address, $data['address']);
     }
 
     /**
@@ -189,5 +195,18 @@ class RequestStore implements CheckoutStore
         } else {
             $this->fillAttributes($target, $attributes);
         }
+    }
+
+    private function getShipToName()
+    {
+        if ($this->billpayer->isOrganization()) {
+            return sprintf(
+                '%s (%s)',
+                $this->billpayer->getCompanyName(),
+                $this->billpayer->getFullName()
+            );
+        }
+
+        return $this->billpayer->getName();
     }
 }
