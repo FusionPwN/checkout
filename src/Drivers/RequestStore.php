@@ -28,27 +28,29 @@ use Vanilo\Checkout\Traits\HasCheckoutState;
  */
 class RequestStore implements CheckoutStore
 {
-    use HasCheckoutState;
-    use HasCart;
-    use EmulatesFillAttributes;
+	use HasCheckoutState;
+	use HasCart;
+	use EmulatesFillAttributes;
 
-    protected $state;
+	protected $state;
 
-    protected Collection $billpayer;
-    protected Collection $shippingAddress;
+	protected Collection $billpayer;
+	protected Collection $shippingAddress;
 
-    /** @var array */
-    protected $customData = [];
+	/** @var array */
+	protected $customData = [];
 
-    public function __construct($config)
-    {
-    }
+	public function __construct($config)
+	{
+		$this->billpayer = collect();
+		$this->shippingAddress = collect();
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function update(array $data)
-    {
+	/**
+	 * @inheritdoc
+	 */
+	public function update(array $data)
+	{
 		$shippingAddrId = Arr::get($data, 'shippingAddress.id');
 		$billingAddrId = Arr::get($data, 'billpayer.id');
 
@@ -64,15 +66,14 @@ class RequestStore implements CheckoutStore
 		$this->updateShippingAddress($shippingAddress ?? []);
 
 		if ($billingAddrId == 'use-shipping-data') {
-			$billingAddress['firstname'] 				= $shippingAddress['firstname'];
-			$billingAddress['lastname'] 				= $shippingAddress['lastname'];
-			$billingAddress['email'] 					= $shippingAddress['email'];
-			$billingAddress['phone'] 					= $shippingAddress['phone'];
-			$billingAddress['address'] 					= [];
-			$billingAddress['address']['address'] 		= $shippingAddress['address'];
-			$billingAddress['address']['city'] 			= $shippingAddress['city'];
-			$billingAddress['address']['postalcode'] 	= $shippingAddress['postalcode'];
-			$billingAddress['address']['country_id'] 	= $shippingAddress['country_id'];
+			$billingAddress['firstname'] 	= $shippingAddress['firstname'];
+			$billingAddress['lastname'] 	= $shippingAddress['lastname'];
+			$billingAddress['email'] 		= $shippingAddress['email'];
+			$billingAddress['phone'] 		= $shippingAddress['phone'];
+			$billingAddress['address'] 		= $shippingAddress['address'];
+			$billingAddress['city'] 		= $shippingAddress['city'];
+			$billingAddress['postalcode'] 	= $shippingAddress['postalcode'];
+			$billingAddress['country_id'] 	= $shippingAddress['country_id'];
 			if (Arr::get($data, 'billpayer.shipping-nif')) {
 				$billingAddress['nif'] = Arr::get($data, 'billpayer.shipping-nif');
 			}
@@ -80,108 +81,106 @@ class RequestStore implements CheckoutStore
 			$billingAddress = $data['billpayer'];
 		} else if ($billingAddrId == 'fatura-simplificada') {
 			$billingAddress = [];
-			$billingAddress['address'] = [];
-			$billingAddress['address']['country_id'] = $shippingAddress['country_id'];
+			$billingAddress['country_id'] = $shippingAddress['country_id'];
 		} else {
 			$billingAddressDB = AdminAddress::find($billingAddrId);
 
-			$billingAddress['firstname'] 				= $billingAddressDB->firstname;
-			$billingAddress['lastname'] 				= $billingAddressDB->lastname;
-			$billingAddress['email'] 					= $billingAddressDB->email;
-			$billingAddress['phone'] 					= $billingAddressDB->phone;
-			$billingAddress['nif'] 						= $billingAddressDB->nif;
-			$billingAddress['address'] 					= [];
-			$billingAddress['address']['address'] 		= $billingAddressDB->address;
-			$billingAddress['address']['city'] 			= $billingAddressDB->city;
-			$billingAddress['address']['postalcode'] 	= $billingAddressDB->postalcode;
-			$billingAddress['address']['country_id'] 	= $billingAddressDB->country_id;
+			$billingAddress['firstname'] 	= $billingAddressDB->firstname;
+			$billingAddress['lastname'] 	= $billingAddressDB->lastname;
+			$billingAddress['email'] 		= $billingAddressDB->email;
+			$billingAddress['phone'] 		= $billingAddressDB->phone;
+			$billingAddress['nif'] 			= $billingAddressDB->nif;
+			$billingAddress['address'] 		= $billingAddressDB->address;
+			$billingAddress['city'] 		= $billingAddressDB->city;
+			$billingAddress['postalcode'] 	= $billingAddressDB->postalcode;
+			$billingAddress['country_id'] 	= $billingAddressDB->country_id;
 		}
 
 		$this->updateBillpayer($billingAddress);
-    }
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function total()
-    {
-        return $this->cart->total();
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function total()
+	{
+		return $this->cart->total();
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function getBillpayer(): Array
-    {
-        return $this->billpayer;
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function getBillpayer(): array
+	{
+		return $this->billpayer;
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function setBillpayer(Array $billpayer)
-    {
-        $this->billpayer = $billpayer;
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function setBillpayer(array $billpayer)
+	{
+		$this->billpayer = $billpayer;
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function getShippingAddress(): Array
-    {
-        return $this->shippingAddress;
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function getShippingAddress(): array
+	{
+		return $this->shippingAddress;
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function setShippingAddress(Array $address)
-    {
-        return $this->shippingAddress = $address;
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function setShippingAddress(array $address)
+	{
+		return $this->shippingAddress = $address;
+	}
 
-    public function setCustomAttribute(string $key, $value): void
-    {
-        Arr::set($this->customData, $key, $value);
-    }
+	public function setCustomAttribute(string $key, $value): void
+	{
+		Arr::set($this->customData, $key, $value);
+	}
 
-    public function getCustomAttribute(string $key)
-    {
-        return Arr::get($this->customData, $key);
-    }
+	public function getCustomAttribute(string $key)
+	{
+		return Arr::get($this->customData, $key);
+	}
 
-    public function putCustomAttributes(array $data): void
-    {
-        $this->customData = $data;
-    }
+	public function putCustomAttributes(array $data): void
+	{
+		$this->customData = $data;
+	}
 
-    public function getCustomAttributes(): array
-    {
-        return $this->customData;
-    }
+	public function getCustomAttributes(): array
+	{
+		return $this->customData;
+	}
 
-    /**
-     * @inheritdoc
-     */
-    protected function updateBillpayerAddress($data)
-    {
-        $this->fill($this->billpayer, $data);
-    }
+	/**
+	 * @inheritdoc
+	 */
+	protected function updateBillpayer($data)
+	{
+		$this->fill($this->billpayer, $data);
+	}
 
-    /**
-     * @inheritdoc
-     */
-    protected function updateShippingAddress($data)
-    {
-        $this->fill($this->shippingAddress, $data);
-    }
+	/**
+	 * @inheritdoc
+	 */
+	protected function updateShippingAddress($data)
+	{
+		$this->fill($this->shippingAddress, $data);
+	}
 
-    private function fill($target, array $attributes)
-    {
-        if (method_exists($target, 'fill')) {
-            $target->fill($attributes);
-        } else {
-            $this->fillAttributes($target, $attributes);
-        }
-    }
+	private function fill($target, array $attributes)
+	{
+		if (method_exists($target, 'fill')) {
+			$target->fill($attributes);
+		} else {
+			$this->fillAttributes($target, $attributes);
+		}
+	}
 }
