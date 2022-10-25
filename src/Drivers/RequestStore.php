@@ -66,6 +66,7 @@ class RequestStore implements CheckoutStore
 		$this->updateShippingAddress($shippingAddress ?? []);
 
 		if ($billingAddrId == 'use-shipping-data') {
+			$billingAddress['id']			= $billingAddrId;
 			$billingAddress['firstname'] 	= $shippingAddress['firstname'];
 			$billingAddress['lastname'] 	= $shippingAddress['lastname'];
 			$billingAddress['email'] 		= $shippingAddress['email'];
@@ -81,10 +82,12 @@ class RequestStore implements CheckoutStore
 			$billingAddress = $data['billpayer'];
 		} else if ($billingAddrId == 'fatura-simplificada') {
 			$billingAddress = [];
-			$billingAddress['country_id'] = $shippingAddress['country_id'];
+			$billingAddress['id']			= $billingAddrId;
+			$billingAddress['country_id'] 	= $shippingAddress['country_id'];
 		} else {
 			$billingAddressDB = AdminAddress::find($billingAddrId);
-
+			
+			$billingAddress['id']			= $billingAddrId;
 			$billingAddress['firstname'] 	= $billingAddressDB->firstname;
 			$billingAddress['lastname'] 	= $billingAddressDB->lastname;
 			$billingAddress['email'] 		= $billingAddressDB->email;
