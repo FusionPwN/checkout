@@ -15,7 +15,6 @@ namespace Vanilo\Checkout\Drivers;
 
 use App\Models\Admin\Address as AdminAddress;
 use Illuminate\Support\Arr;
-use Vanilo\Checkout\Contracts\CheckoutDataFactory;
 use Vanilo\Checkout\Contracts\CheckoutStore;
 use Vanilo\Checkout\Traits\EmulatesFillAttributes;
 use Vanilo\Checkout\Traits\HasCart;
@@ -39,9 +38,6 @@ class RequestStore implements CheckoutStore
 
     /** @var  Array */
     protected $shippingAddress = [];
-
-    /** @var  CheckoutDataFactory */
-    protected $dataFactory;
 
     /** @var array */
     protected $customData = [];
