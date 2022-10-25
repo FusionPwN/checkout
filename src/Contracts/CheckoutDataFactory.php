@@ -13,12 +13,9 @@ declare(strict_types=1);
 
 namespace Vanilo\Checkout\Contracts;
 
-use Vanilo\Contracts\Address;
-use Vanilo\Contracts\Billpayer;
-
 interface CheckoutDataFactory
 {
-    public function createBillpayer(): Billpayer;
+    public function createBillpayer(): ?Array;
 
-    public function createShippingAddress(): Address;
+    public function createShippingAddress(): Array;
 }
