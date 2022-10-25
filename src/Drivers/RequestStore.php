@@ -110,7 +110,7 @@ class RequestStore implements CheckoutStore
 	/**
 	 * @inheritdoc
 	 */
-	public function getBillpayer(): array
+	public function getBillpayer(): Collection
 	{
 		return $this->billpayer;
 	}
@@ -118,7 +118,7 @@ class RequestStore implements CheckoutStore
 	/**
 	 * @inheritdoc
 	 */
-	public function setBillpayer(array $billpayer)
+	public function setBillpayer(Collection $billpayer)
 	{
 		$this->billpayer = $billpayer;
 	}
@@ -126,7 +126,7 @@ class RequestStore implements CheckoutStore
 	/**
 	 * @inheritdoc
 	 */
-	public function getShippingAddress(): array
+	public function getShippingAddress(): Collection
 	{
 		return $this->shippingAddress;
 	}
@@ -134,7 +134,7 @@ class RequestStore implements CheckoutStore
 	/**
 	 * @inheritdoc
 	 */
-	public function setShippingAddress(array $address)
+	public function setShippingAddress(Collection $address)
 	{
 		return $this->shippingAddress = $address;
 	}
