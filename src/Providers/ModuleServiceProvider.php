@@ -17,7 +17,6 @@ use Illuminate\Support\Str;
 use Konekt\Concord\BaseModuleServiceProvider;
 use Vanilo\Checkout\CheckoutManager;
 use Vanilo\Checkout\Contracts\Checkout as CheckoutContract;
-use Vanilo\Checkout\Contracts\CheckoutDataFactory;
 use Vanilo\Checkout\Contracts\CheckoutStore;
 use Vanilo\Checkout\Models\CheckoutState;
 
@@ -45,8 +44,7 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
             }
 
             return new $driverClass(
-                $app['config']->get('vanilo.checkout.store'),
-                $app->make(CheckoutDataFactory::class)
+                $app['config']->get('vanilo.checkout.store')
             );
         });
 
