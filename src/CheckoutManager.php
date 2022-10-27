@@ -17,6 +17,8 @@ use Illuminate\Support\Collection;
 use Vanilo\Checkout\Contracts\Checkout as CheckoutContract;
 use Vanilo\Checkout\Contracts\CheckoutState as CheckoutStateContract;
 use Vanilo\Checkout\Contracts\CheckoutStore;
+use Vanilo\Contracts\Address;
+use Vanilo\Contracts\Billpayer;
 use Vanilo\Contracts\CheckoutSubject;
 
 class CheckoutManager implements CheckoutContract
@@ -74,7 +76,7 @@ class CheckoutManager implements CheckoutContract
      */
     public function setBillpayer(Collection $address)
     {
-        return $this->store->setBillpayer($address);
+        return $this->store->setBillpayer($billpayer);
     }
 
     /**
