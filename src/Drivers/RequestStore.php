@@ -20,8 +20,6 @@ use Vanilo\Checkout\Contracts\CheckoutStore;
 use Vanilo\Checkout\Traits\EmulatesFillAttributes;
 use Vanilo\Checkout\Traits\HasCart;
 use Vanilo\Checkout\Traits\HasCheckoutState;
-use Vanilo\Contracts\Address;
-use Vanilo\Contracts\Billpayer;
 
 /**
  * Stores & fetches checkout data across http requests.
