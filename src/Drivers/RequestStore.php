@@ -82,6 +82,7 @@ class RequestStore implements CheckoutStore
 			}
 		} else if ($billingAddrId == 'new-address') {
 			$billingAddress = $data['billpayer'];
+			$billingAddress['email'] = $shippingAddress['email'];
 		} else if ($billingAddrId == 'fatura-simplificada') {
 			$billingAddress = [];
 			$billingAddress['id']			= $billingAddrId;
