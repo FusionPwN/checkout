@@ -23,111 +23,116 @@ use Vanilo\Contracts\CheckoutSubject;
 
 class CheckoutManager implements CheckoutContract
 {
-    /** @var  CheckoutStore */
-    protected $store;
+	/** @var  CheckoutStore */
+	protected $store;
 
-    public function __construct(CheckoutStore $store)
-    {
-        $this->store = $store;
-    }
+	public function __construct(CheckoutStore $store)
+	{
+		$this->store = $store;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function getCart()
-    {
-        return $this->store->getCart();
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function getCart()
+	{
+		return $this->store->getCart();
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function setCart(CheckoutSubject $cart)
-    {
-        $this->store->setCart($cart);
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function setCart(CheckoutSubject $cart)
+	{
+		$this->store->setCart($cart);
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function getState(): CheckoutStateContract
-    {
-        return $this->store->getState();
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function getState(): CheckoutStateContract
+	{
+		return $this->store->getState();
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function setState($state)
-    {
-        $this->store->setState($state);
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function setState($state)
+	{
+		$this->store->setState($state);
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function getBillpayer(): Collection
-    {
-        return $this->store->getBillpayer();
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function getBillpayer(): Collection
+	{
+		return $this->store->getBillpayer();
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function setBillpayer(Collection $address)
-    {
-        return $this->store->setBillpayer($billpayer);
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function setBillpayer(Collection $address)
+	{
+		return $this->store->setBillpayer($billpayer);
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function getShippingAddress(): Collection
-    {
-        return $this->store->getShippingAddress();
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function getShippingAddress(): Collection
+	{
+		return $this->store->getShippingAddress();
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function setShippingAddress(Collection $address)
-    {
-        $this->store->setShippingAddress($address);
-    }
+	public function getType(): string
+	{
+		return $this->store->getType();
+	}
 
-    public function setCustomAttribute(string $key, $value): void
-    {
-        $this->store->setCustomAttribute($key, $value);
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function setShippingAddress(Collection $address)
+	{
+		$this->store->setShippingAddress($address);
+	}
 
-    public function getCustomAttribute(string $key)
-    {
-        return $this->store->getCustomAttribute($key);
-    }
+	public function setCustomAttribute(string $key, $value): void
+	{
+		$this->store->setCustomAttribute($key, $value);
+	}
 
-    public function putCustomAttributes(array $data): void
-    {
-        $this->store->putCustomAttributes($data);
-    }
+	public function getCustomAttribute(string $key)
+	{
+		return $this->store->getCustomAttribute($key);
+	}
 
-    public function getCustomAttributes(): array
-    {
-        return $this->store->getCustomAttributes();
-    }
+	public function putCustomAttributes(array $data): void
+	{
+		$this->store->putCustomAttributes($data);
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function update(array $data)
-    {
-        $this->store->update($data);
-    }
+	public function getCustomAttributes(): array
+	{
+		return $this->store->getCustomAttributes();
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function total()
-    {
-        return $this->store->total();
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function update(array $data)
+	{
+		$this->store->update($data);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function total()
+	{
+		return $this->store->total();
+	}
 }

@@ -40,6 +40,8 @@ class RequestStore implements CheckoutStore
 	/** @var array */
 	protected $customData = [];
 
+	public string $type = 'checkout';
+
 	public function __construct($config)
 	{
 		$this->billpayer = collect();
@@ -56,6 +58,8 @@ class RequestStore implements CheckoutStore
 
 		$shippingAddress = [];
 		$billingAddress = [];
+
+		$this->type = Arr::get($data, 'checkout', 'checkout');
 
 		if ($shippingAddrId == 'new-address') {
 			$shippingAddress = $data['shippingAddress'];
@@ -87,7 +91,7 @@ class RequestStore implements CheckoutStore
 			$billingAddress['country_id'] 	= $shippingAddress['country_id'];
 		} else {
 			$billingAddressDB = AdminAddress::find($billingAddrId);
-			
+
 			$billingAddress['id']			= $billingAddrId;
 			$billingAddress['firstname'] 	= $billingAddressDB->firstname;
 			$billingAddress['lastname'] 	= $billingAddressDB->lastname;
@@ -141,6 +145,11 @@ class RequestStore implements CheckoutStore
 	public function setShippingAddress(Collection $address)
 	{
 		return $this->shippingAddress = $address;
+	}
+
+	public function getType(): string
+	{
+		return $this->type;
 	}
 
 	public function setCustomAttribute(string $key, $value): void
