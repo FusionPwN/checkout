@@ -41,7 +41,7 @@ class RequestStore implements CheckoutStore
 	protected $customData = [];
 
 	protected string $type = 'checkout';
-	protected int $user_id;
+	protected $user_id = null;
 
 	public function __construct($config)
 	{
