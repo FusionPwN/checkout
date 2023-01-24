@@ -40,7 +40,8 @@ class RequestStore implements CheckoutStore
 	/** @var array */
 	protected $customData = [];
 
-	public string $type = 'checkout';
+	protected string $type = 'checkout';
+	protected int $user_id;
 
 	public function __construct($config)
 	{
@@ -53,6 +54,10 @@ class RequestStore implements CheckoutStore
 	 */
 	public function update(array $data)
 	{
+		if (Arr::has($data, 'user_id')) {
+			$this->setUserId(Arr::get($data, 'user_id'));
+		}
+
 		$shippingAddrId = Arr::get($data, 'shippingAddress.id');
 		$billingAddrId = Arr::get($data, 'billpayer.id');
 
@@ -150,6 +155,16 @@ class RequestStore implements CheckoutStore
 	public function getType(): string
 	{
 		return $this->type;
+	}
+
+	public function getUserId()
+	{
+		return $this->user_id;
+	}
+
+	public function setUserId(int $id)
+	{
+		$this->user_id = $id;
 	}
 
 	public function setCustomAttribute(string $key, $value): void
