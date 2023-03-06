@@ -64,7 +64,7 @@ class RequestStore implements CheckoutStore
 		$shippingAddress = [];
 		$billingAddress = [];
 
-		$this->type = Arr::get($data, 'checkout', 'checkout');
+		$this->type = Arr::get($data, 'type', 'checkout');
 
 		if ($shippingAddrId == 'new-address') {
 			$shippingAddress = $data['shippingAddress'];
@@ -84,6 +84,7 @@ class RequestStore implements CheckoutStore
 			$billingAddress['city'] 		= $shippingAddress['city'];
 			$billingAddress['postalcode'] 	= $shippingAddress['postalcode'];
 			$billingAddress['country_id'] 	= $shippingAddress['country_id'];
+			
 			if (Arr::get($data, 'billpayer.shipping-nif')) {
 				$billingAddress['nif'] = Arr::get($data, 'billpayer.shipping-nif');
 			}
