@@ -92,6 +92,11 @@ class CheckoutManager implements CheckoutContract
 		return $this->store->getType();
 	}
 
+	public function setType(string $type)
+	{
+		$this->store->setType($type);
+	}
+
 	public function getUserId()
 	{
 		return $this->store->getUserId();
