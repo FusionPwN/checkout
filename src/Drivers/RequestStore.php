@@ -66,7 +66,7 @@ class RequestStore implements CheckoutStore
 
 		$this->type = Arr::get($data, 'type', 'checkout');
 
-		if ($shippingAddrId == 'new-address') {
+		if ($shippingAddrId == 'new-address' || $shippingAddrId == 'no-address') {
 			$shippingAddress = $data['shippingAddress'];
 		} else {
 			$shippingAddress = AdminAddress::find($shippingAddrId)->toArray();
