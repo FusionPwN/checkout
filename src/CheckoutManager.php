@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Vanilo\Checkout;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Vanilo\Checkout\Contracts\Checkout as CheckoutContract;
 use Vanilo\Checkout\Contracts\CheckoutState as CheckoutStateContract;
 use Vanilo\Checkout\Contracts\CheckoutStore;
@@ -25,6 +26,8 @@ class CheckoutManager implements CheckoutContract
 {
 	/** @var  CheckoutStore */
 	protected $store;
+
+	public $lock;
 
 	public function __construct(CheckoutStore $store)
 	{
@@ -149,5 +152,16 @@ class CheckoutManager implements CheckoutContract
 	public function total()
 	{
 		return $this->store->total();
+	}
+
+	public function engageLock()
+	{
+		$this->lock = Cache::lock('new-order', 5);
+		$this->lock->block(5);
+	}
+
+	public function releaseLock()
+	{
+		$this->lock?->release();
 	}
 }
