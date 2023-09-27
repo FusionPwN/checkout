@@ -156,8 +156,10 @@ class CheckoutManager implements CheckoutContract
 
 	public function engageLock()
 	{
-		$this->lock = Cache::lock('new-order', 5);
-		$this->lock->block(5);
+		$this->lock = Cache::lock('new-order', 10);
+		if (!$this->lock->get()) {
+			$this->lock->block(20);
+		}
 	}
 
 	public function releaseLock()
